@@ -1,15 +1,13 @@
 package com.story.demo.user.entity;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
+@Data
 @Entity
-@Getter
-@Table(name = "user")
+@Table(name = "[user]")
+@NoArgsConstructor
 public class User {
 
     @Id
