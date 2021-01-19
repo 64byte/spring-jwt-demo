@@ -10,7 +10,6 @@ import java.io.Serializable;
 @Setter
 public class AuthResponse implements Serializable {
 
-    @JsonProperty
     private String token;
 
     public static AuthResponse of(String token) {

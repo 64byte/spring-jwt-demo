@@ -3,6 +3,7 @@ package com.story.demo.authentification.controller;
 import com.story.demo.authentification.dto.AuthRequest;
 import com.story.demo.authentification.dto.AuthResponse;
 import com.story.demo.authentification.provider.JwtProvider;
+import com.story.demo.user.controller.UserController;
 import com.story.demo.user.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,12 +23,12 @@ public class AuthController {
 
     private final JwtProvider jwtProvider;
 
-    private final UserService userService;
+    private final UserController userController;
 
-    public AuthController(AuthenticationManager authenticationManager, JwtProvider jwtProvider, UserService userService) {
+    public AuthController(AuthenticationManager authenticationManager, JwtProvider jwtProvider, UserController userController) {
         this.authenticationManager = authenticationManager;
         this.jwtProvider = jwtProvider;
-        this.userService = userService;
+        this.userController = userController;
     }
 
     @PostMapping

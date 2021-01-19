@@ -3,6 +3,7 @@ package com.story.demo.authentification.provider;
 import com.story.demo.authentification.exception.InvalidJwtAuthenticationException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -31,8 +32,7 @@ public class JwtProvider {
 
     private final UserDetailsService userDetailsService;
 
-    public JwtProvider(UserDetailsService userDetailsService) {
-
+    public JwtProvider(@Qualifier("authUserDetailsService") UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
         secretKey = Keys.hmacShaKeyFor(secret.getBytes());
     }
@@ -68,7 +68,7 @@ public class JwtProvider {
     public String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7, bearerToken.length());
+            return bearerToken.substring(7);
         }
         return null;
     }

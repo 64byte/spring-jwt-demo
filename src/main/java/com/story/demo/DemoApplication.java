@@ -22,24 +22,4 @@ public class DemoApplication {
         SpringApplication.run(DemoApplication.class, args);
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    }
-
 }
-
-@Configuration
-@EnableJpaAuditing
-class DataJpaConfig {
-
-    @Bean
-    public AuditorAware<User> auditor() {
-        return () -> Optional.ofNullable(SecurityContextHolder.getContext())
-                .map(SecurityContext::getAuthentication)
-                .filter(Authentication::isAuthenticated)
-                .map(Authentication::getPrincipal)
-                .map(User.class::cast);
-    }
-}
-
