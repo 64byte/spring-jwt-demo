@@ -12,9 +12,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFilter;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
+@RequestMapping("/api/auth")
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
@@ -29,8 +30,9 @@ public class AuthController {
         this.userService = userService;
     }
 
-    @PostMapping("/auth")
-    public ResponseEntity<AuthResponse> authUser(AuthRequest authRequest) {
+    @PostMapping
+    public @ResponseBody
+    ResponseEntity<AuthResponse> authUser(@RequestBody AuthRequest authRequest) {
 
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()));

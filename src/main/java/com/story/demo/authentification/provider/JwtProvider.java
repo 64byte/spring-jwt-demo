@@ -2,6 +2,7 @@ package com.story.demo.authentification.provider;
 
 import com.story.demo.authentification.exception.InvalidJwtAuthenticationException;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,21 +23,18 @@ import java.util.Base64;
 @Component
 public class JwtProvider {
 
-    private String secret = "abcd";
+    private final String secret = "fd4db9644040cb8231cf7fb727a7ff23a85b985da450c0c840976127c9c0adfe0ef9a4f7e88ce7a1585dd59cf78f0ea57535d6b1cd744c1ee62d726572f51432";
 
     private Key secretKey;
 
-    private long termOfExpiration = 3600000;
+    private final long termOfExpiration = 3600000;
 
     private final UserDetailsService userDetailsService;
 
     public JwtProvider(UserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
-    }
 
-    @PostConstruct
-    protected void init() {
-        secretKey = new SecretKeySpec(secret.getBytes(), "AES");
+        this.userDetailsService = userDetailsService;
+        secretKey = Keys.hmacShaKeyFor(secret.getBytes());
     }
 
     public String generateToken(String username) {
@@ -77,13 +75,13 @@ public class JwtProvider {
 
     public boolean validateToken(String token) {
         try {
-            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            Jws<Claims> claims = Jwts
+                    .parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token);
 
-            if (claims.getBody().getExpiration().before(Timestamp.valueOf(LocalDateTime.now()))) {
-                return false;
-            }
-
-            return true;
+            return !claims.getBody().getExpiration().before(Timestamp.valueOf(LocalDateTime.now()));
         } catch (JwtException | IllegalArgumentException e) {
             throw new InvalidJwtAuthenticationException("Expired or invalid JWT token");
         }

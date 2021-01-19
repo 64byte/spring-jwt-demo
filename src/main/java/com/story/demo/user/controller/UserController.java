@@ -5,6 +5,7 @@ import com.story.demo.user.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,7 +20,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Long> registerUser(UserRegisterRequest userRegisterRequest) {
+    public ResponseEntity<Long> registerUser(@RequestBody UserRegisterRequest userRegisterRequest) {
         try {
             return new ResponseEntity<Long>(userService.registerUser(userRegisterRequest), HttpStatus.CREATED);
         }
