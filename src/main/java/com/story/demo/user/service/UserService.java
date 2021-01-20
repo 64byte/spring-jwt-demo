@@ -39,6 +39,6 @@ public class UserService {
      * @return
      */
     public boolean isAlreadyRegistered(String email) {
-        return userRepository.findByEmail(email) != null;
+        return userRepository.findByEmail(email).isPresent();
     }
 }
