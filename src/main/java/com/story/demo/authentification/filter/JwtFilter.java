@@ -30,4 +30,8 @@ public class JwtFilter extends GenericFilterBean {
         filterChain.doFilter(request, response);
     }
 
+    private String resolveTokenHeader(ServletRequest request) {
+        return "";
+    }
+
 }

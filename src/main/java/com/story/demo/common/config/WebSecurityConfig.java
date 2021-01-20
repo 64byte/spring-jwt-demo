@@ -1,17 +1,14 @@
 package com.story.demo.common.config;
 
-import com.story.demo.authentification.adapter.JwtConfigurer;
+import com.story.demo.authentification.adapter.JwtConfigurerAdapter;
 import com.story.demo.authentification.exception.JwtAuthenticationEntryPoint;
 import com.story.demo.authentification.provider.JwtProvider;
-import io.jsonwebtoken.Jwt;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -58,7 +55,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticated()
 
                 .and()
-                .apply(new JwtConfigurer(jwtProvider));
+                .apply(new JwtConfigurerAdapter(jwtProvider));
     }
 
     @Bean

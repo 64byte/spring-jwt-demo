@@ -17,3 +17,7 @@ spring:
     generate-ddl: true
     show-sql: true
     database: POSTGRESQL
+
+  redis:
+    host: localhost
+    port: 6379
