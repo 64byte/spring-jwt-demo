@@ -18,6 +18,11 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    /**
+     * 새로운 유저를 등록합니다.
+     * @param userRegisterRequest
+     * @return
+     */
     public long registerUser(UserRegisterRequest userRegisterRequest) {
         if (isAlreadyRegistered(userRegisterRequest.getEmail())) {
             throw new AlreadyRegisteredUserException();
@@ -28,7 +33,12 @@ public class UserService {
         return userRepository.save(userRegisterRequest.toEntity()).getUserId();
     }
 
+    /**
+     * 해당 email이 이미 등록되어 있는지 확인합니다.
+     * @param email
+     * @return
+     */
     public boolean isAlreadyRegistered(String email) {
-        return userRepository.findByEmail(email).isPresent();
+        return userRepository.findByEmail(email) != null;
     }
 }

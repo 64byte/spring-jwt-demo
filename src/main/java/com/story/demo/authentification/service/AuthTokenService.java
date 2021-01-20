@@ -20,13 +20,12 @@ public class AuthTokenService {
     /**
      * controller에서 인증이 완료된 유저에게 토큰을 발행한다.
      * 이미 발행되었다면 기존 토큰을 반환하고, 없다면 새롭게 생성하여 반환한다.
+     * // 임시로 새로운 토큰만 발행
      * @param email
      * @return
      */
     public String issueToken(String email) {
-        return authTokenRepository.findByEmail(email)
-                .orElseGet(() -> saveToken(email, jwtProvider.generateToken(email)))
-                .getToken();
+        return jwtProvider.generateToken(email);
     }
 
     /**

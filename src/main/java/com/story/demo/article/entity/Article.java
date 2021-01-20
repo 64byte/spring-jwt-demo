@@ -3,6 +3,7 @@ package com.story.demo.article.entity;
 import com.sun.istack.NotNull;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class Article {
 
     @Id

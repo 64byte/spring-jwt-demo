@@ -1,5 +1,6 @@
 package com.story.demo.user.service;
 
+import com.story.demo.user.entity.User;
 import com.story.demo.user.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,9 +17,13 @@ public class AuthUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return this.userRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException(""));
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        UserDetails userDetails = userRepository.findByEmail(email);
+        if (userDetails == null){
+            throw new UsernameNotFoundException("");
+        }
+
+        return userDetails;
     }
 
 }

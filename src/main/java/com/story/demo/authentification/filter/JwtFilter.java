@@ -25,6 +25,7 @@ public class JwtFilter extends GenericFilterBean {
             throws IOException, ServletException {
 
         String token = resolveAuthorizationHeader(request);
+
         if (token != null && jwtProvider.validateToken(token)) {
             Authentication auth = jwtProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(auth);
@@ -35,10 +36,10 @@ public class JwtFilter extends GenericFilterBean {
 
     private String resolveAuthorizationHeader(ServletRequest request) {
         HttpServletRequest httpServletRequest = (HttpServletRequest)request;
-        String bearerToken = httpServletRequest.getHeader(authorizationHeaderName);
+        String headerContent = httpServletRequest.getHeader(authorizationHeaderName);
 
-        if (bearerToken != null && bearerToken.startsWith(authorizationHeaderPrefix)) {
-            return bearerToken.substring(getAuthorizationHeaderStartIdx);
+        if (headerContent != null && headerContent.startsWith(authorizationHeaderPrefix)) {
+            return headerContent.substring(getAuthorizationHeaderStartIdx);
         }
 
         return null;
