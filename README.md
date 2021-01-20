@@ -9,6 +9,6 @@ dependencies
 - spring-boot-data-redis
 
 domain
-- User
+- User ([User]: https://github.com/64byte/spring-jwt-demo/tree/master/src/main/java/com/story/demo/user)
 - Authentification
 - Article
