@@ -22,15 +22,12 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
 
-    private final JwtProvider jwtProvider;
-
     private final UserController userController;
 
     private final AuthTokenService authTokenService;
 
-    public AuthController(AuthenticationManager authenticationManager, JwtProvider jwtProvider, UserController userController, AuthTokenService authTokenService) {
+    public AuthController(AuthenticationManager authenticationManager, UserController userController, AuthTokenService authTokenService) {
         this.authenticationManager = authenticationManager;
-        this.jwtProvider = jwtProvider;
         this.userController = userController;
         this.authTokenService = authTokenService;
     }
@@ -43,14 +40,12 @@ public class AuthController {
             String email = authRequest.getEmail();
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, authRequest.getPassword()));
 
-            String token = jwtProvider.generateToken(email);
-            authTokenService.saveToken(email, token);
+            String token = authTokenService.issueToken(email);
 
             return new ResponseEntity<>(AuthResponse.of(token), HttpStatus.CREATED);
         } catch (AuthenticationException ae) {
             throw new BadCredentialsException("");
         }
-
     }
 
 }

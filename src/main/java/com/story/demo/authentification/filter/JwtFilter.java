@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 public class JwtFilter extends GenericFilterBean {
+    private static final String authorizationHeaderName = "Authorization";
+    private static final String authorizationHeaderPrefix = "Bearer ";
+    private static final int getAuthorizationHeaderStartIdx = 7;
 
     private final JwtProvider jwtProvider;
 
@@ -21,7 +24,7 @@ public class JwtFilter extends GenericFilterBean {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
             throws IOException, ServletException {
 
-        String token = jwtProvider.resolveToken((HttpServletRequest)request);
+        String token = resolveAuthorizationHeader(request);
         if (token != null && jwtProvider.validateToken(token)) {
             Authentication auth = jwtProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(auth);
@@ -30,8 +33,15 @@ public class JwtFilter extends GenericFilterBean {
         filterChain.doFilter(request, response);
     }
 
-    private String resolveTokenHeader(ServletRequest request) {
-        return "";
+    private String resolveAuthorizationHeader(ServletRequest request) {
+        HttpServletRequest httpServletRequest = (HttpServletRequest)request;
+        String bearerToken = httpServletRequest.getHeader(authorizationHeaderName);
+
+        if (bearerToken != null && bearerToken.startsWith(authorizationHeaderPrefix)) {
+            return bearerToken.substring(getAuthorizationHeaderStartIdx);
+        }
+
+        return null;
     }
 
 }
