@@ -5,8 +5,12 @@ import com.story.demo.user.exception.AlreadyRegisteredUserException;
 import com.story.demo.user.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
+
+import javax.validation.Valid;
 
 @Service
+@Validated
 public class UserService {
 
     private final UserRepository userRepository;
@@ -23,7 +27,7 @@ public class UserService {
      * @param userRegisterRequest
      * @return
      */
-    public long registerUser(UserRegisterRequest userRegisterRequest) {
+    public long registerUser(@Valid UserRegisterRequest userRegisterRequest) {
         if (isAlreadyRegistered(userRegisterRequest.getEmail())) {
             throw new AlreadyRegisteredUserException();
         }
