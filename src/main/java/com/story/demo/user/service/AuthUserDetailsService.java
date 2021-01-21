@@ -1,5 +1,7 @@
 package com.story.demo.user.service;
 
+import com.story.demo.authentification.service.AuthTokenService;
+import com.story.demo.user.entity.AuthUserDetails;
 import com.story.demo.user.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,13 +17,13 @@ public class AuthUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-    public AuthUserDetailsService(UserRepository userRepository) {
+    public AuthUserDetailsService(UserRepository userRepository, AuthTokenService authTokenService) {
         this.userRepository = userRepository;
+        this.authTokenService = authTokenService;
     }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(""));
+        return userRepository.findByEmail(email).map(user -> AuthUserDetails.of(user, "")).orElseThrow(() -> new UsernameNotFoundException(""));
     }
-
 }

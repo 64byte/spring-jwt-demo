@@ -1,6 +1,8 @@
 package com.story.demo.authentification.provider;
 
 import com.story.demo.authentification.exception.InvalidJwtAuthenticationException;
+import com.story.demo.authentification.service.AuthTokenService;
+import com.story.demo.user.entity.AuthUserDetails;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -10,34 +12,31 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import javax.crypto.spec.SecretKeySpec;
-import javax.servlet.http.HttpServletRequest;
 import java.security.Key;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.Temporal;
-import java.time.temporal.TemporalUnit;
-import java.util.Base64;
 
 @Component
 public class JwtProvider {
 
-    private final String secret = "fd4db9644040cb8231cf7fb727a7ff23a85b985da450c0c840976127c9c0adfe0ef9a4f7e88ce7a1585dd59cf78f0ea57535d6b1cd744c1ee62d726572f51432";
+    private static final String secret = "fd4db9644040cb8231cf7fb727a7ff23a85b985da450c0c840976127c9c0adfe0ef9a4f7e88ce7a1585dd59cf78f0ea57535d6b1cd744c1ee62d726572f51432";
 
-    private Key secretKey;
+    private static final Key secretKey = Keys.hmacShaKeyFor(secret.getBytes());
 
-    private final long termOfExpiration = 3600000;
+    private static final long termOfExpiration = 3600000;
 
     private final UserDetailsService userDetailsService;
 
     public JwtProvider(@Qualifier("authUserDetailsService") UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
-        secretKey = Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    public String generateToken(String username) {
+    public Authentication getAuthentication(String token) {
+        UserDetails userDetails = this.userDetailsService.loadUserByUsername(getUsername(token));
+        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+    }
+
+    public static String generateToken(String username) {
         Claims claims = Jwts.claims().setSubject(username);
 
         Timestamp now = Timestamp.valueOf(LocalDateTime.now());
@@ -51,12 +50,7 @@ public class JwtProvider {
                 .compact();
     }
 
-    public Authentication getAuthentication(String token) {
-        UserDetails userDetails = this.userDetailsService.loadUserByUsername(getUsername(token));
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
-    }
-
-    public String getUsername(String token) {
+    public static String getUsername(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(secretKey)
                 .build()
@@ -65,7 +59,7 @@ public class JwtProvider {
                 .getSubject();
     }
 
-    public boolean validateToken(String token) {
+    public static boolean validateToken(String token) {
         try {
             Jws<Claims> claims = Jwts
                     .parserBuilder()
